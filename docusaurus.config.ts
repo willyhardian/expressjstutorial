@@ -5,9 +5,9 @@ import type * as Preset from "@docusaurus/preset-classic";
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-    title: "Express.js Tutorial",
+    title: "ExpressJS Tutorial",
     tagline: "Welcome to the ExpressJSTutorial.com website!",
-    favicon: "img/favicon.ico",
+    favicon: "img/expressjstutoriallogo.png",
 
     // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
     future: {
@@ -73,10 +73,10 @@ const config: Config = {
         // Replace with your project's social card
         image: "img/docusaurus-social-card.jpg",
         navbar: {
-            title: "My Site",
+            title: "ExpressJS Tutorial",
             logo: {
-                alt: "My Site Logo",
-                src: "img/logo.svg",
+                alt: "ExpressJS Tutorial Logo",
+                src: "img/expressjstutoriallogo.png",
             },
             items: [
                 {
@@ -87,7 +87,7 @@ const config: Config = {
                 },
                 { to: "/blog", label: "Blog", position: "left" },
                 {
-                    href: "https://github.com/facebook/docusaurus",
+                    href: "https://github.com/willyhardian/expressjstutorial",
                     label: "GitHub",
                     position: "right",
                 },
@@ -136,7 +136,7 @@ const config: Config = {
                     ],
                 },
             ],
-            copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+            copyright: `Copyright © ${new Date().getFullYear()} ExpressJS Tutorial, Inc. Built with Docusaurus.`,
         },
         prism: {
             theme: prismThemes.github,
