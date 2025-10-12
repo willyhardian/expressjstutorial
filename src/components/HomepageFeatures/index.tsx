@@ -1,4 +1,4 @@
-import type {ReactNode} from 'react';
+import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
@@ -11,38 +11,35 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Solve the Chaos',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Express.js is powerful but unopinionated. We provide the missing framework: a clear, consistent structure (Controllers, Services, Repositories) for scalable projects.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Production Focus',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Move beyond simple CRUD. Learn essential real-world concepts like Dockerization, CI/CD pipelines, robust error handling, and security hardening from day one.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'End-to-End Backend',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Comprehensive guides on integrating the entire modern Node stack, focusing on PostgreSQL for data integrity and Sequelize for high-quality ORM development.
       </>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({ title, Svg, description }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">

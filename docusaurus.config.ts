@@ -5,8 +5,9 @@ import type * as Preset from "@docusaurus/preset-classic";
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-    title: "ExpressJS Tutorial",
-    tagline: "Welcome to the ExpressJSTutorial.com website!",
+    title: "Mastering Production-Ready Express.js",
+    tagline:
+        "The definitive, opinionated guide to building scalable REST APIs using Express, PostgreSQL, and Sequelize.",
     favicon: "img/expressjstutoriallogo.png",
 
     // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
