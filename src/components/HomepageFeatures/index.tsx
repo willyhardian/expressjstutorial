@@ -12,7 +12,7 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'Solve the Chaos',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('@site/static/img/compass.svg').default,
     description: (
       <>
         Express.js is powerful but unopinionated. We provide the missing framework: a clear, consistent structure (Controllers, Services, Repositories) for scalable projects.
@@ -21,7 +21,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Production Focus',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('@site/static/img/cloud.svg').default,
     description: (
       <>
         Move beyond simple CRUD. Learn essential real-world concepts like Dockerization, CI/CD pipelines, robust error handling, and security hardening from day one.
@@ -30,7 +30,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'End-to-End Backend',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    Svg: require('@site/static/img/link.svg').default,
     description: (
       <>
         Comprehensive guides on integrating the entire modern Node stack, focusing on PostgreSQL for data integrity and Sequelize for high-quality ORM development.
