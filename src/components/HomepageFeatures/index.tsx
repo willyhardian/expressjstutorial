@@ -33,7 +33,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/link.svg').default,
     description: (
       <>
-        Comprehensive guides on integrating the entire modern Node stack, focusing on PostgreSQL for data integrity and Sequelize for high-quality ORM development.
+        Gain expert-level implementation knowledge for architecting, securing, testing, and deploying robust API services
       </>
     ),
   },
