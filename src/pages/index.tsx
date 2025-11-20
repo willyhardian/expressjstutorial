@@ -23,11 +23,11 @@ function HomepageHeader() {
             to="/docs/category/getting-started">
             Start Learning Now
           </Link>
-          <Link
+          {/* <Link
             className="button button--outline button--secondary button--md"
             to="/docs/intro">
             View Architectural Map
-          </Link>
+          </Link> */}
         </div>
       </div>
     </header>
