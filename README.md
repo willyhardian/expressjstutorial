@@ -2,7 +2,7 @@
 
 > **Mastering Production-Ready Express.js** > The definitive, opinionated guide to building scalable REST APIs using Express, PostgreSQL, and Sequelize.
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR_BADGE_ID/deploy-status)](https://app.netlify.com/sites/YOUR_SITE/deploys) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 📖 About The Project
 
