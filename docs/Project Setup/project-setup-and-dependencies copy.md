@@ -94,7 +94,7 @@ touch src/server.js
 
 3. Open src/server.js and add the following code:
 
-```js
+```js showLineNumbers
 // src/server.js
 const express = require("express");
 const app = express();

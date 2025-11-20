@@ -92,10 +92,10 @@ A best practice is to create a single, centralized configuration file that impor
 
 Add the following code to `src/config/index.js`:
 
-```
+```js showLineNumbers
 // src/config/index.js
 
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 
 // Load .env file contents into process.env
 // This should be at the very top of your application's entry point
@@ -110,19 +110,19 @@ dotenv.config();
  */
 
 const config = {
-  app: {
-    port: process.env.PORT || 3000,
-    env: process.env.NODE_ENV || 'development',
-  },
+    app: {
+        port: process.env.PORT || 3000,
+        env: process.env.NODE_ENV || "development",
+    },
 
-  // Future database config
-  // db: {
-  //   host: process.env.DB_HOST,
-  //   port: process.env.DB_PORT,
-  //   user: process.env.DB_USER,
-  //   pass: process.env.DB_PASS,
-  //   name: process.env.DB_NAME,
-  // }
+    // Future database config
+    // db: {
+    //   host: process.env.DB_HOST,
+    //   port: process.env.DB_PORT,
+    //   user: process.env.DB_USER,
+    //   pass: process.env.DB_PASS,
+    //   name: process.env.DB_NAME,
+    // }
 };
 
 // We freeze the object to prevent accidental modifications
@@ -147,7 +147,7 @@ Finally, let's update our src/server.js file to use this new configuration file.
 
 Notice that we no longer need require('dotenv').config() here, because our config file already handles it. We also no longer need to hard-code the PORT.
 
-```js
+```js showLineNumbers
 // src/server.js
 
 // Import our centralized configuration

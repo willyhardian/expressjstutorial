@@ -102,7 +102,7 @@ ren src\server.js app.js
 
 The file should now look like this:
 
-```js
+```js showLineNumbers
 // src/app.js
 const express = require("express");
 const app = express();
@@ -117,16 +117,16 @@ module.exports = app;
 
 3. Create the new src/server.js: Now, create a new file at src/server.js. This file will be our new entry point.
 
-```
+```js showLineNumbers
 // src/server.js
-const config = require('./config');
-const app = require('./app');
+const config = require("./config");
+const app = require("./app");
 
 const PORT = config.app.port;
 const ENV = config.app.env;
 
 app.listen(PORT, () => {
-console.log(`Server is running on port ${PORT} in ${ENV} mode.`);
+    console.log(`Server is running on port ${PORT} in ${ENV} mode.`);
 });
 ```
 
