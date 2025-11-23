@@ -1,55 +1,49 @@
 ---
 sidebar_position: 2
-title: Sending Emails (Nodemailer)
+title: Sending Emails (Resend)
 ---
 
-# Sending Emails
+# Sending Emails (Resend)
 
-In a production application, you never want to clutter your Controllers with SMTP configuration or HTML template strings.
+In a production application, you never want to clutter your Controllers with email logic or HTML template strings.
 
-We will implement a dedicated **Email Service**. This allows any part of your application to say "Send an email to X" without worrying about _how_ it gets delivered.
+We will implement a dedicated **Email Service**. This allows any part of your application (Auth, Billing, Notifications) to say "Send an email" without knowing _how_ it gets delivered.
+
+For this opinionated guide, we use **[Resend](https://resend.com)**. It is modern, developer-friendly, and has excellent deliverability compared to standard SMTP.
 
 ---
 
 ## Step 1: Install Dependencies
 
-We will use **Nodemailer**, the standard library for Node.js email sending.
+We need the official Resend SDK.
 
 ```bash
-npm install nodemailer
+npm install resend
 ```
 
 ## Step 2: Update Configuration
 
-Security Rule: Never hardcode your email credentials.
+Security Rule: Never hardcode your API keys.
 
-1. Update `.env`: For development, we recommend using [Mailtrap](https://mailtrap.io) or [Ethereal Email](https://ehtereal.email). They catch emails so you don't accidentally spam real users.
+Get your API Key: Sign up at [Resend.com](https://resend.com) and generate an API Key.
+
+Update `.env`: For testing, Resend gives you a free testing domain (`onboarding@resend.dev`).
 
 ```ini
 # .env
-SMTP_HOST=smtp.ethereal.email
-SMTP_PORT=587
-SMTP_USER=your_user
-SMTP_PASS=your_pass
-EMAIL_FROM=noreply@myapp.com
+RESEND_API_KEY=re_123456_your_key_here
+EMAIL_FROM=onboarding@resend.dev
 ```
 
-2. Update `src/config/index.js`: Add the email config to our centralized object.
+3. Update `src/config/index.js`: Add the email config to our centralized object.
 
 ```js
 // src/config/index.js
 const config = {
     // ... other config
     email: {
-        smtp: {
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
-            },
-        },
-        from: process.env.EMAIL_FROM,
+        resendApiKey: process.env.RESEND_API_KEY,
+        from: process.env.EMAIL_FROM || "onboarding@resend.dev",
     },
 };
 
@@ -60,57 +54,64 @@ module.exports = Object.freeze(config);
 
 Create `src/services/email.service.js`.
 
-This service will handle the connection to the SMTP provider. We will create a generic `sendEmail` function that can be reused everywhere.
+This is the most important part. We are abstracting the email provider. If you ever want to switch back to Nodemailer or SendGrid, you only have to change this one file. The rest of your app won't know the difference.
 
 ```js
 // src/services/email.service.js
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const config = require("../config");
+const ApiError = require("../utils/ApiError");
 
-// 1. Create the Transporter (The Connection)
-const transporter = nodemailer.createTransport(config.email.smtp);
-
-/**
- * Verify connection configuration (Optional, runs on startup)
- */
-if (config.app.env !== "test") {
-    transporter
-        .verify()
-        .then(() => console.log("✅ Connected to Email Server"))
-        .catch((err) =>
-            console.error("❌ Unable to connect to email server:", err)
-        );
-}
+// Initialize Resend Client
+const resend = new Resend(config.email.resendApiKey);
 
 /**
- * Send an email
- * @param {string} to - Recipient email
+ * Core function to send an email.
+ * This wraps the Resend API so we can handle errors centrally.
+ * * @param {string} to - Recipient email
  * @param {string} subject - Email subject
  * @param {string} text - Plain text body
  * @param {string} html - HTML body (optional)
  */
 const sendEmail = async (to, subject, text, html = "") => {
-    const msg = {
-        from: config.email.from,
-        to,
-        subject,
-        text,
-        html: html || text, // Fallback to text if no HTML provided
-    };
+    // In Development, Resend only allows sending to your own email
+    // unless you verify a domain.
 
-    await transporter.sendMail(msg);
+    const { data, error } = await resend.emails.send({
+        from: config.email.from,
+        to: to,
+        subject: subject,
+        text: text,
+        html: html || text, // Use text as fallback
+    });
+
+    if (error) {
+        console.error("❌ Email Error:", error);
+        // We usually don't want to crash the app if an email fails,
+        // so we just log it. But you could throw an error if critical.
+        // throw new ApiError(500, 'Email could not be sent');
+    } else {
+        console.log(`✅ Email sent to ${to} (ID: ${data.id})`);
+    }
 };
 
 /**
- * Pre-defined template: Send Welcome Email
- * @param {string} to - Recipient email
- * @param {string} name - User's name
+ * Business Logic: Send Welcome Email
+ * * This function prepares the content. It doesn't care about "how" it is sent.
  */
 const sendWelcomeEmail = async (to, name) => {
     const subject = "Welcome to ExpressJSTutorial!";
+
     const text = `Hi ${name},\n\nWelcome to our platform! We are glad to have you.`;
-    // In a real app, you might load an HTML template file here
-    const html = `<h1>Hi ${name},</h1><p>Welcome to our platform!</p>`;
+
+    // In a real app, you would use a template engine (like React Email) here
+    const html = `
+    <div style="font-family: sans-serif; padding: 20px;">
+      <h1>Hi ${name},</h1>
+      <p>Welcome to <strong>ExpressJSTutorial</strong>!</p>
+      <p>We are glad to have you on board.</p>
+    </div>
+  `;
 
     await sendEmail(to, subject, text, html);
 };
@@ -121,39 +122,36 @@ module.exports = {
 };
 ```
 
-## Step 4: Usage Example (Architecture Check)
+## Step 4: Usage Example (Integration)
 
-Now, how do we use this?
+Now, let's use this service in our Auth Flow.
 
-The Wrong Way: Importing nodemailer inside a Controller.
-
-The Right Way (C-S-R Pattern): Your Controller calls a Service (e.g., `AuthService`), and that Service calls the `EmailService`.
-
-Example: Integrating into Registration
-
-Open `src/services/auth.service.js`:
+Open `src/services/auth.service.js` and import the email service.
 
 ```js
-
 // src/services/auth.service.js
-const emailService = require('./email.service'); // <--- Import the service
+const emailService = require('./email.service'); // <--- Import
+// ... other imports
 
 const register = async (userData) => {
-  // ... existing logic (check email, hash password, create user) ...
+  // ... existing logic (hash password, create user) ...
 
   const newUser = await userRepository.createUser({ ... });
 
   // Send the email!
-  // We don't 'await' this if we don't want to delay the response to the user.
-  // Or we can await it if email delivery is critical.
-  await emailService.sendWelcomeEmail(newUser.email, newUser.name);
+  // We use 'catch' here so that if the email fails, the registration
+  // doesn't fail. The user is created regardless.
+  emailService.sendWelcomeEmail(newUser.email, newUser.name)
+    .catch(err => console.error('Failed to send welcome email:', err));
 
   return newUser;
 };
 ```
 
-**Why this is Scalable**
+Why is this Scalable?
 
-1. Decoupling: If you switch from SMTP to SendGrid API later, you only change src/services/email.service.js. The rest of your app (Auth, Orders, etc.) doesn't need to know.
+1. Separation of Concerns: The AuthService doesn't know what an API Key is. It just asks for an email to be sent.
 
-2. Testing: You can easily mock emailService.sendEmail in your unit tests so you don't actually send emails when testing your registration flow.
+2. Safety: If Resend is down, we catch the error so the user can still sign up.
+
+3. Simplicity: We are using modern tools (Resend) that keep our code clean and minimal, avoiding the bloated configuration of older SMTP libraries.
